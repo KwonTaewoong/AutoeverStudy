@@ -22,4 +22,7 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "WebSocket")
 	void SendMessage(FString Message);
+
+	UPROPERTY(BlueprintReadWrite, Category = "WebSocket")
+	FString ReceiveData;
 };
