@@ -15,11 +15,12 @@ void UWebSocketGameInstance::Init()
 
 	WebSocket = FWebSocketsModule::Get().CreateWebSocket("ws://localhost:3000");
 
-	WebSocket->OnMessage().AddLambda([](const FString& MessageString)
+	WebSocket->OnMessage().AddLambda([this](const FString& MessageString)
 		{
-			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Cyan, "Received message: " + MessageString);
+			this->ReceiveData = MessageString;
+			OnMsgReceived.Broadcast(MessageString);
+			
 		});
-
 	WebSocket->OnMessageSent().AddLambda([](const FString& MessageString)
 		{
 			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, "Send message: " + MessageString);
@@ -43,4 +44,10 @@ void UWebSocketGameInstance::SendMessage(FString Message)
 	{
 		WebSocket->Send(Message);
 	}
+}
+
+FString UWebSocketGameInstance::OnRecived_Implementation(FString Message)
+{
+	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Cyan, "Received message: " + FCString::Atoi(*Message));
+	return Message;
 }

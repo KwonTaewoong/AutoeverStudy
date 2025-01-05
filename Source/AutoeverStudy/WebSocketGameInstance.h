@@ -5,11 +5,13 @@
 #include "CoreMinimal.h"
 #include "Engine/GameInstance.h"
 #include "IWebSocket.h"
+#include "WebSocketsModule.h"
 #include "WebSocketGameInstance.generated.h"
 
 /**
  * 
  */
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FDele_Dynamic_OneParam, const FString&, Msg);
 UCLASS()
 class AUTOEVERSTUDY_API UWebSocketGameInstance : public UGameInstance
 {
@@ -24,5 +26,14 @@ public:
 	void SendMessage(FString Message);
 
 	UPROPERTY(BlueprintReadWrite, Category = "WebSocket")
-	FString ReceiveData;
+	FString ReceiveData = FString(TEXT(""));
+
+	/*UFUNCTION(BlueprintCallable, Category = "WebSocket")
+	void OnReceived(const FString& param);*/
+
+	UFUNCTION(BlueprintCallable, Category = "WebSocket")
+	virtual FString OnRecived_Implementation(FString param);
+
+	UPROPERTY(BlueprintAssignable, VisibleAnywhere, BlueprintCallable, Category = "WebSocket")
+	FDele_Dynamic_OneParam OnMsgReceived;
 };
